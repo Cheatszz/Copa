@@ -69,10 +69,15 @@ label.up{display:inline-block;border:1px solid var(--line);border-radius:99px;pa
 .evi{display:inline-flex;gap:3px;margin-left:2px;font-size:13px}
 .cap{position:absolute;left:-12px;bottom:-2px;width:17px;height:17px;display:grid;place-items:center;border-radius:50%;background:#ffd24a;color:#111;font-size:11px;font-weight:800;line-height:1;border:1px solid #111;box-shadow:0 1px 3px rgba(0,0,0,.5)}.cap.in{position:static;display:inline-grid;vertical-align:middle;margin-left:4px}
 button.sm{white-space:nowrap}
+#menu{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:50}
+.kb{width:34px;height:34px;padding:0;border-radius:50%;font-size:20px;line-height:1;display:grid;place-items:center;position:relative;opacity:.85}
+.kb i{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+.kmenu{position:absolute;right:0;top:40px;min-width:215px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:2px}
+.kmenu button{border:0;background:transparent;border-radius:8px;text-align:left;padding:9px 10px;width:100%}.kmenu button:hover:not(:disabled){background:var(--in)}
 h2{font-size:22px;margin:14px 0 6px}h3{margin:0 0 6px;color:var(--blue)}
 </style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style><style>artifact-sync,artifact-local{display:contents}</style></head><body>
-<header><div class="tag">BLUE LOCK RPG</div><h1>Copa do Mundo 2026</h1><div class="sub">Grupos · artilheiros · escalações · partidas</div></header>
-<nav id="nav"></nav><main><div class="bar" id="bar"></div><div id="root"></div></main>
+<header><div class="tag">BLUE LOCK RPG</div><h1>Copa do Mundo 2026</h1></header>
+<div id="menu"></div><nav id="nav"></nav><main><div class="bar" id="bar"></div><div id="root"></div></main>
 <script id="data" type="application/json">null</script>
 <script>
 const $=s=>document.querySelector(s);
@@ -172,7 +177,8 @@ return `<div class="ed"><button data-act="repx">← Voltar às partidas</button>
 <div class="ps" style="margin-top:8px;text-align:center">⚽ gol · 👟 assistência · 🟨 amarelo · 🟥 vermelho · ⭐ MVP · C capitão</div>`}
 const TABS=[['grupos','Grupos',groups],['stats','Artilheiros & Stats',stats],['times','Escalações',teams],['jogadores','Jogadores',players],['jogos','Partidas',matches]];
 function render(){document.documentElement.classList.toggle('ed-on',edit);$('#nav').innerHTML=TABS.map(t=>`<button class="${tab==t[0]?'on':''}" data-act="tab" data-id="${t[0]}">${t[1]}</button>`).join('');
-$('#bar').innerHTML=(owner?`<button class="${edit?'on':''}" data-act="edit">${edit?'✏️ Modo edição ligado':'✏️ Editar'}</button><button class="pri" data-act="save" ${dirty?'':'disabled'}>${dirty?'Salvar no GitHub':'Tudo salvo'}</button><button data-act="dl" title="Baixa o data.json para enviar manualmente ao GitHub">⬇️ data.json</button><button data-act="ghcfg" title="Conexão com o GitHub">⚙️</button>`:(showAdmin?'':'👁️ Somente leitura'))+(loadErr&&loadErr!='404'?'<span>⚠️ Não consegui ler os dados ('+esc(loadErr)+')</span>':'')+(msg?`<span>${esc(msg)}</span>`:'')+(showAdmin?adminHtml():'');
+$('#bar').innerHTML=(owner?(edit?'<span>✏️ Modo edição ligado</span>':''):(showAdmin?'':'👁️ Somente leitura'))+(loadErr&&loadErr!='404'?'<span>⚠️ Não consegui ler os dados ('+esc(loadErr)+')</span>':'')+(msg?`<span>${esc(msg)}</span>`:'')+(showAdmin?adminHtml():'');
+$('#menu').innerHTML=(owner||showAdmin)?`<button class="kb" data-act="menu" aria-label="Menu" title="Menu">⋮${dirty?'<i></i>':''}</button>${menuOpen?`<div class="kmenu">${owner?`<button data-act="edit">${edit?'✏️ Desligar edição':'✏️ Editar'}</button><button data-act="save" ${dirty?'':'disabled'}>💾 ${dirty?'Salvar no GitHub':'Tudo salvo'}</button><button data-act="dl">⬇️ Baixar data.json</button>`:''}<button data-act="ghcfg">🔗 Conexão com o GitHub</button></div>`:''}`:'';
 $('#root').innerHTML=TABS.find(t=>t[0]==tab)[2]()}
 function ensure(p){p.pos={ATA:'CA',DEF:'ZAG',MD:'PD',ME:'PE',ALD:'LD',ALE:'LE'}[p.pos]||p.pos;p.at=p.at||{};[...ATTR,...GKA].forEach(k=>p.at[k]=p.at[k]||50);p.st=p.st||{};STS.forEach(s=>p.st[s[0]]=p.st[s[0]]||0)}
 function ensureT(t){t.form=okForm(t.form)?t.form:'4-3-3';t.kit=t.kit||'#2f7bff';t.slots=Array.isArray(t.slots)?t.slots:[];while(t.slots.length<11)t.slots.push('');t.slots.length=11;t.xy=Array.isArray(t.xy)?t.xy:[]}
@@ -201,10 +207,11 @@ else{const o=[...document.querySelectorAll('.slot')].find(s=>s!==d.el&&Math.hypo
 if(o){const k=+o.dataset.slot;[t.slots[d.i],t.slots[k]]=[t.slots[k],t.slots[d.i]]}else t.xy[d.i]=[+d.nx.toFixed(1),+d.ny.toFixed(1)]}
 dirty=true;pick=null;render()});
 document.addEventListener('pointercancel',()=>{if(pd){pd=null;render()}});
-document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b||b.tagName=='SELECT'||b.tagName=='INPUT'&&b.type!='checkbox')return;if(b.dataset.act=='slot'&&justDragged)return;const a=b.dataset.act,id=b.dataset.id,v=i=>$('#'+i).value,was=armed;armed=null;msg='';const t=T(selT);
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b||b.tagName=='SELECT'||b.tagName=='INPUT'&&b.type!='checkbox')return;if(b.dataset.act=='slot'&&justDragged)return;const a=b.dataset.act,id=b.dataset.id,v=i=>$('#'+i).value,was=armed;armed=null;msg='';if(a!='menu')menuOpen=false;const t=T(selT);
 if(a=='tab'){tab=id;pick=null;rep=null}else if(a=='goteam'){selT=id;tab='times'}else if(a=='rep'){rep=id;scrollTo(0,0)}else if(a=='repx'){rep=null}else if(a=='dir'){if(id=='s')sd2=-sd2;else sd=-sd}else if(a=='edit'){edit=!edit;pick=null}
+else if(a=='menu'){menuOpen=!menuOpen}
 else if(a=='save'){saveGH();return}
-else if(a=='dl'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));l.download='data.json';l.click();return}
+else if(a=='dl'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));l.download='data.json';l.click();render();return}
 else if(a=='ghcfg'){showAdmin=!showAdmin}
 else if(a=='ghsave'){cfg={repo:$('#gr').value.trim().replace(/^https?:\/\/github\.com\//,'').replace(/\/$/,''),branch:$('#gb').value.trim()||'main',token:$('#gt').value.trim()};try{localStorage.setItem('bl_gh',JSON.stringify(cfg))}catch(e){}owner=!!(cfg.token&&cfg.repo);showAdmin=false;boot();return}
 else if(a=='ghout'){cfg={};try{localStorage.removeItem('bl_gh')}catch(e){}owner=false;edit=false;showAdmin=false;boot();return}
@@ -227,7 +234,7 @@ else if(a=='addgol'||a=='addcard'){const g=a=='addgol',p=v((g?'gp':'cp')+id);if(
 else if(a=='delev'){const m=S.matches.find(x=>x.id==id),[x]=m.ev.splice(+b.dataset.i,1);apply(x,-1);dirty=true}
 render()});
 let cfg={};try{cfg=JSON.parse(localStorage.getItem('bl_gh')||'{}')||{}}catch(e){}
-let showAdmin=location.hash=='#admin',loadErr='';
+let showAdmin=location.hash=='#admin',loadErr='',menuOpen=false;
 owner=!!(cfg.token&&cfg.repo);
 const adminHtml=()=>`<div class="card" style="width:100%;max-width:520px;text-align:left;color:var(--tx)"><b>Conectar ao GitHub</b><div class="ps" style="margin:4px 0 8px">O token fica salvo só neste navegador. Quem não tem o token não consegue salvar nada.</div><div class="ed"><input id="gr" placeholder="usuario/repositorio" value="${esc(cfg.repo||'')}" style="flex:1"><input id="gb" placeholder="branch" value="${esc(cfg.branch||'main')}" size="8"></div><div class="ed"><input id="gt" type="password" placeholder="Token de acesso (fine-grained)" value="${esc(cfg.token||'')}" style="width:100%"></div><div class="ed"><button class="pri" data-act="ghsave">Salvar configuração</button>${cfg.token?'<button data-act="ghout">Desconectar</button>':''}</div></div>`;
 async function loadData(){const pub=async()=>{const r=await fetch('data.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.json()};
@@ -244,5 +251,6 @@ if(!p.ok){const e=await p.json().catch(()=>({}));throw new Error(p.status+' '+(e
 dirty=false;loadErr='';msg='Salvo no GitHub! O site público atualiza em cerca de 1 minuto.'}catch(e){msg='Falha ao salvar: '+e.message}render()}
 async function boot(){$('#root').innerHTML='<div class="ps" style="text-align:center;padding:30px">Carregando…</div>';loadErr='';const d=await loadData();if(d&&d.teams)S=d;else if(!S||!S.teams)S=seed();S.players.forEach(ensure);S.teams.forEach(ensureT);selT=S.teams[0].id;dirty=false;render()}
 addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+document.addEventListener('click',e=>{if(menuOpen&&!e.composedPath().some(n=>n.id=='menu')){menuOpen=false;render()}});
 boot();
 </script></body></html>
